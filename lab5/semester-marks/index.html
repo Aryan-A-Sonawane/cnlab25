@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semester Marks System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .marks-input {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+            align-items: end;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .result-card {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .grade {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pass { color: #4CAF50; }
+        .fail { color: #f44336; }
+
+        @media (max-width: 600px) {
+            .marks-input {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Semester Marks Management</h1>
+        
+        <form id="marksForm">
+            <div class="form-group">
+                <label>Student Name:</label>
+                <input type="text" id="studentName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Roll Number:</label>
+                <input type="text" id="rollNo" required>
+            </div>
+
+            <div class="form-group">
+                <label>Semester:</label>
+                <select id="semester" required>
+                    <option value="">Select Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                </select>
+            </div>
+
+            <div id="subjectsContainer">
+                <h3 style="margin: 20px 0 10px 0;">Subject Marks (MSE: 30, ESE: 70)</h3>
+                <div class="subject-entry">
+                    <div class="marks-input">
+                        <input type="text" placeholder="Subject Name" class="subject-name" required>
+                        <input type="number" placeholder="MSE (0-30)" min="0" max="30" class="mse" required>
+                        <input type="number" placeholder="ESE (0-70)" min="0" max="70" class="ese" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="addSubject()">+ Add Subject</button>
+            <button type="submit">Calculate Result</button>
+        </form>
+
+        <div id="resultCard" class="result-card">
+            <h2>Result Summary</h2>
+            <div class="result-item">
+                <strong>Student Name:</strong>
+                <span id="resName"></span>
+            </div>
+            <div class="result-item">
+                <strong>Roll Number:</strong>
+                <span id="resRoll"></span>
+            </div>
+            <div class="result-item">
+                <strong>Semester:</strong>
+                <span id="resSem"></span>
+            </div>
+            <div id="subjectResults"></div>
+            <div class="result-item">
+                <strong>Total Marks:</strong>
+                <span id="totalMarks"></span>
+            </div>
+            <div class="result-item">
+                <strong>Percentage:</strong>
+                <span id="percentage"></span>
+            </div>
+            <div class="grade" id="gradeDisplay"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="window.print()">Print Result</button>
+                <button onclick="saveResult()">Save to Database</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let subjectCount = 1;
+
+        function addSubject() {
+            subjectCount++;
+            const container = document.getElementById('subjectsContainer');
+            const newSubject = document.createElement('div');
+            newSubject.className = 'subject-entry';
+            newSubject.style.marginTop = '10px';
+            newSubject.innerHTML = `
+                <div class="marks-input">
+                    <input type="text" placeholder="Subject Name" class="subject-name" required>
+                    <input type="number" placeholder="MSE (0-30)" min="0" max="30" class="mse" required>
+                    <input type="number" placeholder="ESE (0-70)" min="0" max="70" class="ese" required>
+                </div>
+            `;
+            container.appendChild(newSubject);
+        }
+
+        document.getElementById('marksForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateResult();
+        });
+
+        function calculateResult() {
+            const studentName = document.getElementById('studentName').value;
+            const rollNo = document.getElementById('rollNo').value;
+            const semester = document.getElementById('semester').value;
+
+            const subjects = document.querySelectorAll('.subject-entry');
+            let totalMarks = 0;
+            let maxMarks = 0;
+            let subjectResultsHTML = '';
+            let allPass = true;
+
+            subjects.forEach((subject, index) => {
+                const name = subject.querySelector('.subject-name').value;
+                const mse = parseFloat(subject.querySelector('.mse').value) || 0;
+                const ese = parseFloat(subject.querySelector('.ese').value) || 0;
+                const total = mse + ese;
+                
+                totalMarks += total;
+                maxMarks += 100;
+
+                const pass = total >= 40;
+                if (!pass) allPass = false;
+
+                subjectResultsHTML += `
+                    <div class="result-item">
+                        <strong>${name}:</strong>
+                        <span class="${pass ? 'pass' : 'fail'}">${total}/100 (MSE: ${mse}, ESE: ${ese})</span>
+                    </div>
+                `;
+            });
+
+            const percentage = (totalMarks / maxMarks * 100).toFixed(2);
+            let grade = '';
+            
+            if (percentage >= 90) grade = 'A+';
+            else if (percentage >= 80) grade = 'A';
+            else if (percentage >= 70) grade = 'B+';
+            else if (percentage >= 60) grade = 'B';
+            else if (percentage >= 50) grade = 'C';
+            else if (percentage >= 40) grade = 'D';
+            else grade = 'F';
+
+            const status = allPass && percentage >= 40 ? 'PASS' : 'FAIL';
+
+            document.getElementById('resName').textContent = studentName;
+            document.getElementById('resRoll').textContent = rollNo;
+            document.getElementById('resSem').textContent = 'Semester ' + semester;
+            document.getElementById('subjectResults').innerHTML = subjectResultsHTML;
+            document.getElementById('totalMarks').textContent = `${totalMarks}/${maxMarks}`;
+            document.getElementById('percentage').textContent = percentage + '%';
+            document.getElementById('gradeDisplay').innerHTML = `Grade: ${grade} - <span class="${status === 'PASS' ? 'pass' : 'fail'}">${status}</span>`;
+            
+            document.getElementById('resultCard').classList.add('show');
+        }
+
+        function saveResult() {
+            const resultData = {
+                studentName: document.getElementById('resName').textContent,
+                rollNo: document.getElementById('resRoll').textContent,
+                semester: document.getElementById('resSem').textContent,
+                totalMarks: document.getElementById('totalMarks').textContent,
+                percentage: document.getElementById('percentage').textContent,
+                grade: document.getElementById('gradeDisplay').textContent
+            };
+
+            // Simulating API call
+            console.log('Saving to database:', resultData);
+            alert('Result saved successfully! (Check console for data)\n\nIn production, this would call:\nPOST http://localhost:8080/api/results');
+        }
+    </script>
+</body>
+</html>

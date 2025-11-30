@@ -1,0 +1,3 @@
+Hello! This is a sample file for testing file transfer.
+This file will be sent from server to client using TCP socket programming.
+Lab 3A - File Transfer using Sockets.

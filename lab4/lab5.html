@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VIT Projects Overview</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="p-4">
+
+<div class="container">
+    <h1 class="mb-2 text-center fw-bold text-primary">CNT LAB 5</h1>
+    <h5 class="mb-4 text-center text-muted">Relevance of SDP, EDAI, DT & Course Projects</h5>
+
+    <!-- Nav Pills -->
+    <ul class="nav nav-pills mb-3" id="projectTabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-target="#sdp" data-bs-toggle="tab">SDP</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-target="#edi" data-bs-toggle="tab">EDI</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-target="#dt" data-bs-toggle="tab">DT</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-target="#cp" data-bs-toggle="tab">Course Projects</a></li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content border p-3 rounded bg-light">
+        <div class="tab-pane fade show active" id="sdp">
+            <h4>Software Development Project</h4>
+            <p>Every semester, we undertake Software Development Projects for each subject. These projects allow us to understand and apply whatever we have learned in our coursework to real-world scenarios. By working on practical implementations, we bridge the gap between theoretical knowledge and practical application, preparing us for industry challenges.</p>
+        </div>
+
+        <div class="tab-pane fade" id="edi">
+            <h4>Engineering Design & Innovation (EDAI)</h4>
+            <p>EDAI is a semester-long project that focuses on Engineering Design and Innovation. We brainstorm creative ideas and work on developing innovative solutions, designing either software applications or physical products. This project simulates the experience of working on a startup idea, encouraging entrepreneurial thinking and innovative problem-solving from conception to implementation.</p>
+        </div>
+
+        <div class="tab-pane fade" id="dt">
+            <h4>Design Thinking (DT)</h4>
+            <p>Design Thinking is dedicated to publishing a research paper based on the EDAI project we built. This component allows us to document our innovative work academically, conducting thorough research, analysis, and presenting our findings in a scholarly format. It helps develop our technical writing and research skills while contributing to the academic community.</p>
+        </div>
+
+        <div class="tab-pane fade" id="cp">
+            <h4>Course Projects</h4>
+            <p>Course Projects enable us to apply theoretical topics learned in class and transform them into working, functional projects. These hands-on assignments help us understand how abstract concepts and theories translate into practical applications, reinforcing our learning through implementation and experimentation.</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $(".nav-link").click(function(){
+        console.log("Tab switched: " + $(this).text());
+    });
+});
+</script>
+
+</body>
+</html>
